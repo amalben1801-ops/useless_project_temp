@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SockCheck | Login</title>
+  <meta name="description" content="Enter the SockCheck cinematic demo.">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body class="cinematic-login">
+  <main class="login-stage">
+    <section class="portrait-panel" aria-label="SockCheck welcome artwork">
+      <img src="{{ url_for('static', filename='login-hero.jpg') }}" alt="Stylized welcome portrait saying hiii chellow">
+      <div class="film-shade"></div>
+      <div class="film-grain"></div>
+      <div class="scene-copy">
+        <span class="scene-number">SCENE 01 · THE PAIR CHECK</span>
+        <p>Two socks enter.<br>One verdict leaves.</p>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <div class="topline"><span class="mark">✓</span><span>SOCKCHECK</span></div>
+      <div class="login-card">
+        <p class="eyebrow">HACKATHON SCREENING ROOM</p>
+        <h1>Ready for the<br><em>perfect pair?</em></h1>
+        <p class="lede">Sign in and let the camera settle the sock mystery.</p>
+
+        {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+
+        <form method="post" action="{{ url_for('login') }}">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" value="demo" autocomplete="username" required autofocus>
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" value="sockcheck" autocomplete="current-password" required>
+          <button type="submit">Enter SockCheck <span>→</span></button>
+        </form>
+
+        <p class="demo-note"><span></span> Demo access: <strong>demo</strong> / <strong>sockcheck</strong></p>
+      </div>
+      <footer><span>LOCAL FLASK PROTOTYPE</span><span>SIH · 2026</span></footer>
+    </section>
+  </main>
+</body>
+</html>

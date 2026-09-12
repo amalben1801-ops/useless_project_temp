@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SockCheck | Compare two socks</title>
+  <meta name="description" content="Compare two separate sock photos using a local Flask server.">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='extras.css') }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+<header><a class="brand" href="{{ url_for('detector') }}">✓ SockCheck</a><nav><span>FLASK EDITION</span><a class="logout-link" href="{{ url_for('logout') }}">Log out</a></nav></header>
+<main>
+  <p class="eyebrow">YOUR PAIR CHECK</p>
+  <h1>Two photos. One comparison.</h1>
+  <p class="intro">Choose a separate photo for each sock. Use similar angles and lighting.</p>
+  <form id="comparison-form" enctype="multipart/form-data">
+    <div class="cards">
+    {% for key, label in [('a', 'A'), ('b', 'B')] %}
+    <section class="card" aria-labelledby="heading-{{ key }}">
+      <h2 id="heading-{{ key }}"><span class="badge">{{ label }}</span> Sock {{ label }}</h2>
+      <div class="canvas-frame">
+        <div class="placeholder" id="placeholder-{{ key }}"><span>{{ label }}</span><p>Add a close-up of this sock</p></div>
+        <canvas id="canvas-{{ key }}" hidden aria-label="Sock {{ label }} photo. Drag a box to crop, or use the full photo."></canvas>
+      </div>
+      <label class="file-label" for="file-{{ key }}">Choose photo for sock {{ label }}</label>
+      <input id="file-{{ key }}" name="sock_{{ key }}" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="file-help">
+      <div class="buttons"><button type="button" data-camera="{{ key }}">Use camera</button><button type="button" data-full="{{ key }}" disabled>Use full photo</button></div>
+      <p class="selection" id="selection-{{ key }}">No photo selected</p>
+    </section>
+    {% endfor %}
+    </div>
+    <p id="file-help" class="help">JPG, PNG or WebP · up to 10 MB each. Drag a box on each photo to exclude the floor, skin and trousers. On touch screens you can also tap two opposite corners. Without a crop, the whole photo is compared.</p>
+    <div class="submit-row"><button id="compare" class="primary" type="submit" disabled>Compare socks ↗</button><button id="reset" type="button">Clear both</button></div>
+  </form>
+  <p id="message" role="status">Add both photos to begin.</p>
+  <section id="result" hidden aria-live="polite"><h2 id="verdict"></h2><p id="explanation"></p><div class="scores"><div>Pair match<strong id="match-score"></strong></div><div>Colour similarity<strong id="colour"></strong></div><div>Texture similarity<strong id="texture"></strong></div></div><figure id="perfect-match" hidden><img src="{{ url_for('static', filename='perfect-ok.gif') }}" alt="Perfect OK celebration"><figcaption>Perfect OK!! Pair match is 90 or above.</figcaption></figure><figure id="different-video" hidden><video id="different-video-player" controls playsinline><source src="{{ url_for('static', filename='not-same.mp4') }}" type="video/mp4">Your browser cannot play this video.</video><figcaption>Socks do not match.</figcaption><button id="play-different-video" type="button" hidden>Play sound</button></figure><p class="help">Similarity scores, not confidence percentages.</p></section>
+  <details><summary>How does this check work?</summary><p>The Flask server compares colour distribution and fabric texture in the two selected areas. This is a computer-vision prototype, not a trained sock detector. It cannot establish whether two socks came from the same original pair, distinguish all patterns, or confirm that an image contains a sock. Different backgrounds and lighting can change the result. Real-photo accuracy has not been measured.</p><p>Photos are processed in memory by your Flask server and are not saved to disk or sent to an external AI service.</p></details>
+</main>
+<dialog id="camera-dialog"><h2 id="camera-title">Take a sock photo</h2><video id="video" autoplay playsinline muted></video><p id="camera-message" role="status"></p><div class="buttons"><button id="capture" class="primary" disabled>Take photo</button><button id="close-camera">Cancel</button></div></dialog>
+</body></html>
